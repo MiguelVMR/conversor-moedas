@@ -15,7 +15,7 @@ import java.util.UUID;
  * @since 08/05/2025
  */
 @Entity
-@Table(name = "tb_reinos")
+@Table(name = "tb_cidades")
 @Getter
 @Setter
 public class Cidade implements Serializable {

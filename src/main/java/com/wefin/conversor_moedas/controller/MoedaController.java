@@ -22,7 +22,8 @@ import java.util.UUID;
  * @since 09/05/2025
  */
 @Tag(name = "Módulo de Moedas do Sistema")
-@RestController("/moeda")
+@RestController
+@RequestMapping("/moeda")
 public class MoedaController {
 
     private final MoedaService moedaService;

@@ -43,7 +43,7 @@ public class MoedaServiceImpl implements MoedaService {
 
     @Override
     public Moeda updateMoeda(MoedaRecordDTO moedaRecordDTO) {
-        var moedaDb = moedaRepository.findByName(moedaRecordDTO.name())
+        var moedaDb = moedaRepository.findById(moedaRecordDTO.id())
                 .orElseThrow(() -> new NotFoundException("Moeda não encontrada!"));
 
         moedaDb.setName(moedaRecordDTO.name());

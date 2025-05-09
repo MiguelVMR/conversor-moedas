@@ -13,8 +13,7 @@ import java.util.UUID;
  */
 public record CidadeRecordDTO(
         UUID id,
-
-        @NotBlank(message = "Nome do Reino é obrigatório")
+        @NotBlank(message = "Nome da Cidade é obrigatório")
         @Size(max = 100)
         String name
 ) {
