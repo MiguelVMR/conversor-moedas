@@ -1,5 +1,6 @@
 package com.wefin.conversor_moedas.exception;
 
+import com.wefin.conversor_moedas.enums.ErrorType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,4 +44,32 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorRecorddResponse(HttpStatus.BAD_REQUEST.value(),"Erro na validação dos campos: ",errors));
     }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorRecorddResponse> handleBusinessException(BusinessException ex) {
+        HttpStatus status = getStatusFromErrorType(ex.getErrorType());
+
+        Map<String, String> details = new HashMap<>();
+        details.put("errorType", ex.getErrorType().name());
+        details.put("errorDescription", ex.getErrorType().getDescription());
+        details.put("timestamp", LocalDateTime.now().toString());
+
+        if (ex.getField() != null) {
+            details.put("field", ex.getField());
+        }
+
+        return ResponseEntity
+                .status(status)
+                .body(new ErrorRecorddResponse(status.value(), ex.getMessage(), details));
+    }
+
+    private HttpStatus getStatusFromErrorType(ErrorType errorType) {
+        return switch (errorType) {
+            case ENTITY_NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case INVALID_DATA -> HttpStatus.BAD_REQUEST;
+            case BUSINESS_RULE -> HttpStatus.UNPROCESSABLE_ENTITY;
+            case DATABASE_ERROR, UNEXPECTED_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
+    }
+
 }

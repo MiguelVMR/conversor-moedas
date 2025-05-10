@@ -19,6 +19,16 @@ import java.util.UUID;
 @Table(name = "tb_produtos")
 @Getter
 @Setter
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = "Produto.completo",
+                attributeNodes = {
+                        @NamedAttributeNode("moeda"),
+                        @NamedAttributeNode("cidade"),
+                        @NamedAttributeNode("taxaPersonalizada")
+                }
+        )
+})
 public class Produto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -40,7 +50,11 @@ public class Produto implements Serializable {
     @JoinColumn(name = "moeda_origem_id")
     private Moeda moeda;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cidade_id")
+    private Cidade cidade;
+
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "tipo_ajuste_id")
     private TaxaPersonalizada taxaPersonalizada;
 }

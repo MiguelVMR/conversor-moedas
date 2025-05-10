@@ -51,13 +51,13 @@ public class CidadeServiceImpl implements CidadeService {
     }
 
     @Override
-    public void deleteCidade(UUID moedaId) {
-        cidadeRepository.deleteById(moedaId);
+    public void deleteCidade(UUID cidadeId) {
+        cidadeRepository.deleteById(cidadeId);
     }
 
     @Override
-    public Cidade findCidadeById(UUID moedaId) {
-        return cidadeRepository.findById(moedaId)
+    public Cidade findCidadeById(UUID cidadeId) {
+        return cidadeRepository.findById(cidadeId)
                 .orElseThrow(() -> new NotFoundException("Cidade não encontrada!"));
     }
 

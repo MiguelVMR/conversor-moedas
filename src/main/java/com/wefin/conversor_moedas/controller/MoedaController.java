@@ -46,7 +46,7 @@ public class MoedaController {
         return ResponseEntity.status(HttpStatus.OK).body(moedaService.updateMoeda(moedaRecordDTO));
     }
 
-    @Operation(summary = "Método que deleta uma moeda no sistema")
+    @Operation(summary = "Método que deleta uma moeda do sistema")
     @DeleteMapping("/{moedaId}")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> deleteMoeda(@PathVariable(value = "moedaId") UUID moedaId) {

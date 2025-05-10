@@ -14,13 +14,13 @@ import java.util.UUID;
  * @since 09/05/2025
  */
 public interface CidadeService {
-    Cidade createCidade(CidadeRecordDTO moedaRecordDTO);
+    Cidade createCidade(CidadeRecordDTO cidadeRecordDTO);
 
-    Cidade updateCidade(CidadeRecordDTO moedaRecordDTO);
+    Cidade updateCidade(CidadeRecordDTO cidadeRecordDTO);
 
-    void deleteCidade(UUID moedaId);
+    void deleteCidade(UUID ciadeId);
 
-    Cidade findCidadeById(UUID moedaId);
+    Cidade findCidadeById(UUID ciadeId);
 
     Page<Cidade> findAllCidades(Pageable pageable);
 }

@@ -42,10 +42,10 @@ final class AuthServiceImpl implements AuthService {
                 .issuer("conversorMoedasAPI")
                 .subject(usuario.get().getId().toString())
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(300L))
+                .expiresAt(now.plusSeconds(600L))
                 .build();
 
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-        return new LoginResponseRecordDTO(jwtValue,300L);
+        return new LoginResponseRecordDTO(jwtValue,600L);
     }
 }
