@@ -3,6 +3,8 @@ package com.wefin.conversor_moedas.exception;
 import com.wefin.conversor_moedas.enums.ErrorType;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 
 @Getter
 public class BusinessException extends RuntimeException {
@@ -46,6 +48,15 @@ public class BusinessException extends RuntimeException {
                 String.format("Dados inválidos para o campo %s: %s", field, reason),
                 ErrorType.INVALID_DATA,
                 field
+        );
+    }
+
+    public static BusinessException insufficientFunds(BigDecimal valorDado, BigDecimal valorASerPago) {
+        return new BusinessException(
+                "Valor insuficiente",
+                ErrorType.INSUFFICIENT_FUNDS,
+                String.format("Valor fornecido (%s) é menor que o valor necessário (%s)",
+                        valorDado, valorASerPago)
         );
     }
 

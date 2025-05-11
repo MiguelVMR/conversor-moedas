@@ -34,4 +34,12 @@ public interface TaxaCambioRepository extends JpaRepository<TaxaCambio, UUID> {
         """)
     Page<TaxaCambio> findAllByCidade(Pageable pageable, @Param("cidadeId") UUID cidadeId);
 
+    @Query("""
+            SELECT DISTINCT t FROM TaxaCambio t 
+            INNER JOIN FETCH t.moedaOrigem mo
+            INNER JOIN FETCH t.moedaDestino md
+            WHERE mo.id = :moedaOrigemId AND md.id = :moedaDestinoId           
+            """)
+    Optional<TaxaCambio> findMoedaOrigemAndMoedaDestino(@Param("moedaOrigemId") UUID moedaOrigemId, @Param("moedaDestinoId") UUID moedaDestinoId);
+
 }

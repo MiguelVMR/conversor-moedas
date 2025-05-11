@@ -66,8 +66,7 @@ public class GlobalExceptionHandler {
     private HttpStatus getStatusFromErrorType(ErrorType errorType) {
         return switch (errorType) {
             case ENTITY_NOT_FOUND -> HttpStatus.NOT_FOUND;
-            case INVALID_DATA -> HttpStatus.BAD_REQUEST;
-            case BUSINESS_RULE -> HttpStatus.UNPROCESSABLE_ENTITY;
+            case INVALID_DATA, INSUFFICIENT_FUNDS, BUSINESS_RULE -> HttpStatus.BAD_REQUEST;
             case DATABASE_ERROR, UNEXPECTED_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
     }

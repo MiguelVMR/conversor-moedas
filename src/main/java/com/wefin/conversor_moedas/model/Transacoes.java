@@ -59,4 +59,8 @@ public class Transacoes implements Serializable {
     @JoinColumn(name = "taxa_cambio_id")
     private TaxaCambio taxaCambio;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "moeda_destino_id")
+    private Moeda moedaDestino;
+
 }

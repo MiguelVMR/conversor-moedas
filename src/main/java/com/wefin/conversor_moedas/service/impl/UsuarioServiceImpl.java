@@ -1,12 +1,15 @@
 package com.wefin.conversor_moedas.service.impl;
 
 import com.wefin.conversor_moedas.dto.CreateUserDTO;
+import com.wefin.conversor_moedas.exception.BusinessException;
 import com.wefin.conversor_moedas.exception.ConflictException;
 import com.wefin.conversor_moedas.model.Usuario;
 import com.wefin.conversor_moedas.repository.UsuarioRepository;
 import com.wefin.conversor_moedas.service.UsuarioService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 /**
  * The Class UserServiceImpl
@@ -37,6 +40,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setEmail(createUserDTO.email());
         usuarioRepository.save(usuario);
         return usuario;
+    }
+
+    @Override
+    public Usuario findById(UUID usuarioId) {
+        return usuarioRepository
+                .findById(usuarioId)
+                .orElseThrow(() -> BusinessException.entityNotFound("Usuario",usuarioId.toString()));
     }
 
 

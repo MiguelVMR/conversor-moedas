@@ -26,4 +26,6 @@ public interface ProducoService {
     Produto createProduto(ProdutoRecordDTO produtoRecordDTO);
 
     Produto updateProduto(ProdutoRecordDTO produtoRecordDTO);
+
+    void deleteProduto(UUID produtoId);
 }

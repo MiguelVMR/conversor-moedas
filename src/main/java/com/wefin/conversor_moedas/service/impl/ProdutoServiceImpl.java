@@ -120,6 +120,11 @@ public class ProdutoServiceImpl implements ProducoService {
         }
     }
 
+    @Override
+    public void deleteProduto(UUID produtoId) {
+        produtoRepository.deleteById(produtoId);
+    }
+
     private Produto atualizarTaxaPersonalizaxa(Produto produto, TaxaPersonalizadaRecordDTO taxaPersonalizadaRecordDTO) {
         if (taxaPersonalizadaRecordDTO != null) {
             validarTaxaPersonalizada(taxaPersonalizadaRecordDTO);

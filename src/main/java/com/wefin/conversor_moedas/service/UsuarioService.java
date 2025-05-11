@@ -4,6 +4,8 @@ package com.wefin.conversor_moedas.service;
 import com.wefin.conversor_moedas.dto.CreateUserDTO;
 import com.wefin.conversor_moedas.model.Usuario;
 
+import java.util.UUID;
+
 /**
 * The Interface UserService
 *
@@ -12,5 +14,6 @@ import com.wefin.conversor_moedas.model.Usuario;
 */
 public interface UsuarioService {
     Usuario createUser(CreateUserDTO createUserDTO);
+    Usuario findById(UUID usuarioId);
     boolean existsByUsername(String username);
 }

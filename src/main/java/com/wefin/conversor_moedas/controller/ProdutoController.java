@@ -81,4 +81,12 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(producoService.updateProduto(produtoRecordDTO));
     }
 
+    @Operation(summary = "Método que deleta um produto do sistema")
+    @DeleteMapping("/{produtoId}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<Void> deleteProduto(@PathVariable(value = "produtoId") UUID produtoId) {
+        producoService.deleteProduto(produtoId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }

@@ -13,7 +13,8 @@ public enum ErrorType {
     INVALID_DATA("Dados inválidos"),
     DATABASE_ERROR("Erro de banco de dados"),
     BUSINESS_RULE("Regra de negócio violada"),
-    UNEXPECTED_ERROR("Erro inesperado");
+    UNEXPECTED_ERROR("Erro inesperado"),
+    INSUFFICIENT_FUNDS("Saldo insuficiente");
 
     @Getter
     private final String description;
