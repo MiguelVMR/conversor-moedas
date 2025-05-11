@@ -1,8 +1,8 @@
 package com.wefin.conversor_moedas.service.impl;
 
 import com.wefin.conversor_moedas.dto.MoedaRecordDTO;
+import com.wefin.conversor_moedas.exception.BusinessException;
 import com.wefin.conversor_moedas.exception.ConflictException;
-import com.wefin.conversor_moedas.exception.NotFoundException;
 import com.wefin.conversor_moedas.model.Moeda;
 import com.wefin.conversor_moedas.repository.MoedaRepository;
 import com.wefin.conversor_moedas.service.MoedaService;
@@ -44,7 +44,7 @@ public class MoedaServiceImpl implements MoedaService {
     @Override
     public Moeda updateMoeda(MoedaRecordDTO moedaRecordDTO) {
         var moedaDb = moedaRepository.findById(moedaRecordDTO.id())
-                .orElseThrow(() -> new NotFoundException("Moeda não encontrada!"));
+                .orElseThrow(() -> BusinessException.entityNotFound("Moeda",moedaRecordDTO.id().toString()));
 
         moedaDb.setName(moedaRecordDTO.name());
         moedaDb.setSymbol(moedaRecordDTO.symbol());
@@ -61,7 +61,7 @@ public class MoedaServiceImpl implements MoedaService {
     @Override
     public Moeda findMoedaById(UUID moedaId){
         return moedaRepository.findById(moedaId)
-                .orElseThrow(() -> new NotFoundException("Moeda não encontrada!"));
+                .orElseThrow(() -> BusinessException.entityNotFound("Moeda",moedaId.toString()));
     }
 
     @Override

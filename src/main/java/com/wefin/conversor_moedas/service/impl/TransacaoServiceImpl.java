@@ -9,11 +9,16 @@ import com.wefin.conversor_moedas.model.Produto;
 import com.wefin.conversor_moedas.model.Transacoes;
 import com.wefin.conversor_moedas.repository.TransacaoRepository;
 import com.wefin.conversor_moedas.service.*;
+import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -63,14 +68,14 @@ public class TransacaoServiceImpl implements TrasacaoService {
             BigDecimal valorConvertido;
             if (taxaCambio.getMoedaOrigem().equals(produto.getMoeda())) {
 
-                if(!taxaCambio.getMoedaDestino().getId().equals(moedaOrigem.getId())) {
+                if (!taxaCambio.getMoedaDestino().getId().equals(moedaOrigem.getId())) {
                     throw BusinessException.businessRule("Taxa de cambio inválida para esta operação");
                 }
 
                 valorConvertido = valorTotal.multiply(taxaCambio.getTaxa());
             } else {
 
-                if(!taxaCambio.getMoedaOrigem().getId().equals(moedaOrigem.getId())) {
+                if (!taxaCambio.getMoedaOrigem().getId().equals(moedaOrigem.getId())) {
                     throw BusinessException.businessRule("Taxa de cambio inválida para esta operação");
                 }
                 valorConvertido = valorTotal.divide(taxaCambio.getTaxa(), 2, RoundingMode.HALF_UP);
@@ -84,7 +89,7 @@ public class TransacaoServiceImpl implements TrasacaoService {
         BigDecimal valorASerPago = transacao.getValorConvertido();
 
         if (valorDado.compareTo(valorASerPago) < 0) {
-            throw BusinessException.insufficientFunds(valorDado,valorASerPago);
+            throw BusinessException.insufficientFunds(valorDado, valorASerPago);
         }
 
         BigDecimal troco = valorDado.subtract(valorASerPago);
@@ -113,7 +118,6 @@ public class TransacaoServiceImpl implements TrasacaoService {
     }
 
 
-
     private BigDecimal calcularValorProdutoComTaxa(Produto produto) {
         BigDecimal valorInicial = produto.getPreco();
 
@@ -132,5 +136,38 @@ public class TransacaoServiceImpl implements TrasacaoService {
         }
     }
 
+    @Override
+    public Page<TransacaoViewRecordDTO> findTransacoesWithFilters(
+            Pageable pageable,
+            UUID produtoId,
+            UUID cidadeId,
+            UUID moedaOrigemId,
+            UUID moedaDestinoId,
+            LocalDate dataInicial,
+            LocalDate dataFinal) {
 
+        LocalDateTime dataInicio = null;
+        LocalDateTime dataFim = null;
+
+        if (dataInicial != null && dataFinal != null) {
+            if (dataInicial.isAfter(dataFinal)) {
+                throw new BusinessException("Data inicial não pode ser posterior à data final");
+            }
+            dataInicio = dataInicial.atStartOfDay();
+            dataFim = dataFinal.atTime(23, 59, 59, 999999999);
+        } else if (dataInicial != null || dataFinal != null) {
+            throw new BusinessException("Data inicial e final devem ser fornecidas juntas");
+        }
+
+
+        return transacaoRepository.findTransacoesWithFilters(
+                pageable,
+                produtoId,
+                cidadeId,
+                moedaOrigemId,
+                moedaDestinoId,
+                dataInicio,
+                dataFim
+        );
+    }
 }

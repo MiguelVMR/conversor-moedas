@@ -1,12 +1,12 @@
 package com.wefin.conversor_moedas.service.impl;
 
+import com.wefin.conversor_moedas.dto.ConsultaTaxaCambioRecordDTO;
 import com.wefin.conversor_moedas.dto.TaxaCambioRecordDTO;
 import com.wefin.conversor_moedas.enums.ErrorType;
 import com.wefin.conversor_moedas.exception.BusinessException;
 import com.wefin.conversor_moedas.exception.NotFoundException;
 import com.wefin.conversor_moedas.model.Cidade;
 import com.wefin.conversor_moedas.model.Moeda;
-import com.wefin.conversor_moedas.model.Produto;
 import com.wefin.conversor_moedas.model.TaxaCambio;
 import com.wefin.conversor_moedas.repository.TaxaCambioRepository;
 import com.wefin.conversor_moedas.service.CidadeService;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -44,7 +43,7 @@ public class TaxaCambioServiceImpl implements TaxaCambioService {
     @Override
     public TaxaCambio findTaxaById(UUID taxaCambioId) {
         return taxaCambioRepository.findById(taxaCambioId)
-                .orElseThrow(() -> new NotFoundException("Taxa de Cambio não encontrada!"));
+                .orElseThrow(() -> BusinessException.entityNotFound("Taxa de cambio",taxaCambioId.toString()));
     }
 
     @Override
@@ -124,6 +123,23 @@ public class TaxaCambioServiceImpl implements TaxaCambioService {
                     e
             );
         }
+    }
+
+    @Override
+    public ConsultaTaxaCambioRecordDTO consultaCotacao(UUID taxaCambioId, BigDecimal valorEnviado, UUID moedaDoCliente) {
+        TaxaCambio taxaDeCambio = findTaxaById(taxaCambioId);
+
+        if(!taxaDeCambio.getMoedaDestino().getId().equals(moedaDoCliente)) {
+            throw BusinessException.businessRule("Moeda enviada não corresponte com a taxa de cambio");
+        }
+        if(valorEnviado == null) {
+            valorEnviado = BigDecimal.ZERO;
+        }
+
+        return new ConsultaTaxaCambioRecordDTO(taxaDeCambio.getTaxa(),
+                valorEnviado.multiply(taxaDeCambio.getTaxa()),
+                        taxaDeCambio.getMoedaDestino().getName(),
+                        taxaDeCambio.getMoedaOrigem().getName());
     }
 
     private TaxaCambio atualizarMoeda(TaxaCambio taxa, UUID moedaId, String tipoMoeda,

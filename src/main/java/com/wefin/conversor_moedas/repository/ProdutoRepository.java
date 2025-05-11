@@ -1,7 +1,6 @@
 package com.wefin.conversor_moedas.repository;
 
 import com.wefin.conversor_moedas.model.Produto;
-import com.wefin.conversor_moedas.model.TaxaCambio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -38,8 +37,8 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
     @Query(value = """
     SELECT DISTINCT p 
     FROM Produto p 
-    LEFT JOIN FETCH p.moeda m 
-    LEFT JOIN FETCH p.cidade c 
+    INNER JOIN FETCH p.moeda m 
+    INNER JOIN FETCH p.cidade c 
     LEFT JOIN FETCH p.taxaPersonalizada tp 
     WHERE (:comAjuste IS NULL OR 
         (:comAjuste = true AND tp IS NOT NULL) OR 
@@ -51,8 +50,8 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
             countQuery = """
     SELECT COUNT(DISTINCT p) 
     FROM Produto p 
-    LEFT JOIN p.moeda m 
-    LEFT JOIN p.cidade c 
+    INNER JOIN p.moeda m 
+    INNER JOIN p.cidade c 
     LEFT JOIN p.taxaPersonalizada tp 
     WHERE (:comAjuste IS NULL OR 
         (:comAjuste = true AND tp IS NOT NULL) OR 
@@ -61,7 +60,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
     AND (:moedaId IS NULL OR m.id = :moedaId)
     AND (:nome IS NULL OR CAST(p.nome AS string) ILIKE CONCAT('%', CAST(:nome AS string), '%'))
     """)
-    Page<Produto> findAllByCidadeWithFilters(
+    Page<Produto> findAllProdutosWithFilters(
             Pageable pageable,
             @Param("cidadeId") UUID cidadeId,
             @Param("nome") String nome,

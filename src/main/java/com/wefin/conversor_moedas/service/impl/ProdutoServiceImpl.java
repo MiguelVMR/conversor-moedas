@@ -18,8 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -44,7 +42,7 @@ public class ProdutoServiceImpl implements ProducoService {
     @Override
     public Produto findProdutoById(UUID produtoId) {
         return produtoRepository.findById(produtoId)
-                .orElseThrow(() -> new NotFoundException("Produto não encontrada!"));
+                .orElseThrow(() -> BusinessException.entityNotFound("Produto", produtoId.toString()));
     }
 
     @Override
@@ -67,7 +65,7 @@ public class ProdutoServiceImpl implements ProducoService {
 
     @Override
     public Page<Produto> buscaPorFiltros(UUID cidadeId, String nome, UUID moedaId, Boolean temAjuste, Pageable pageable) {
-        return produtoRepository.findAllByCidadeWithFilters(
+        return produtoRepository.findAllProdutosWithFilters(
                 pageable,
                 cidadeId,
                 nome,
@@ -155,7 +153,7 @@ public class ProdutoServiceImpl implements ProducoService {
             try {
                 Moeda moeda = moedaService.findMoedaById(moedaId);
                 produto.setMoeda(moeda);
-            } catch (NotFoundException e) {
+            } catch (NotFoundException | BusinessException e) {
                 throw BusinessException.entityNotFound("Moeda", moedaId.toString());
             }
         }
@@ -168,7 +166,7 @@ public class ProdutoServiceImpl implements ProducoService {
             try {
                 Cidade cidade = cidadeService.findCidadeById(cidadeId);
                 produto.setCidade(cidade);
-            } catch (NotFoundException e) {
+            } catch (NotFoundException | BusinessException e) {
                 throw BusinessException.entityNotFound("Cidade", cidadeId.toString());
             }
         }

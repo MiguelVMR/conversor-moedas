@@ -1,10 +1,12 @@
 package com.wefin.conversor_moedas.service;
 
+import com.wefin.conversor_moedas.dto.ConsultaTaxaCambioRecordDTO;
 import com.wefin.conversor_moedas.dto.TaxaCambioRecordDTO;
 import com.wefin.conversor_moedas.model.TaxaCambio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -26,5 +28,7 @@ public interface TaxaCambioService {
     TaxaCambio createTaxaCambio(TaxaCambioRecordDTO taxaCambioRecordDTO);
 
     TaxaCambio updateTaxaCambio(TaxaCambioRecordDTO taxaCambioRecordDTO);
+
+    ConsultaTaxaCambioRecordDTO consultaCotacao(UUID taxaCambioId, BigDecimal valorEnviado, UUID moedaDoCliente);
 
 }

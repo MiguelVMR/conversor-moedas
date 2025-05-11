@@ -1,5 +1,6 @@
 package com.wefin.conversor_moedas.controller;
 
+import com.wefin.conversor_moedas.dto.ConsultaTaxaCambioRecordDTO;
 import com.wefin.conversor_moedas.dto.TaxaCambioRecordDTO;
 import com.wefin.conversor_moedas.model.TaxaCambio;
 import com.wefin.conversor_moedas.service.TaxaCambioService;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -77,5 +79,15 @@ public class TaxaCambioController {
         return ResponseEntity.status(HttpStatus.OK).body(taxaCambioService.updateTaxaCambio(taxaCambioRecordDTO));
     }
 
+    @Operation(summary = "Método que consulta a taxas de cambio")
+    @GetMapping("consta-taxa")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<ConsultaTaxaCambioRecordDTO> consultaTaxa(
+            @RequestParam UUID taxaCambioId,
+            @RequestParam(required = false) BigDecimal valorEnviado,
+            @RequestParam UUID moedaDoCliente
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(taxaCambioService.consultaCotacao(taxaCambioId,valorEnviado,moedaDoCliente));
+    }
 
 }

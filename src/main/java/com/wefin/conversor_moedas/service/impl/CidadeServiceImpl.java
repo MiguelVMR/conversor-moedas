@@ -1,8 +1,8 @@
 package com.wefin.conversor_moedas.service.impl;
 
 import com.wefin.conversor_moedas.dto.CidadeRecordDTO;
+import com.wefin.conversor_moedas.exception.BusinessException;
 import com.wefin.conversor_moedas.exception.ConflictException;
-import com.wefin.conversor_moedas.exception.NotFoundException;
 import com.wefin.conversor_moedas.model.Cidade;
 import com.wefin.conversor_moedas.repository.CidadeRepository;
 import com.wefin.conversor_moedas.service.CidadeService;
@@ -43,7 +43,7 @@ public class CidadeServiceImpl implements CidadeService {
     @Override
     public Cidade updateCidade(CidadeRecordDTO cidadeRecordDTO) {
         var cidadeDb = cidadeRepository.findById(cidadeRecordDTO.id())
-                .orElseThrow(() -> new NotFoundException("Cidade não encontrada!"));
+                .orElseThrow(() -> BusinessException.entityNotFound("Cidade",cidadeRecordDTO.id().toString()));
 
         cidadeDb.setNome(cidadeRecordDTO.name());
 
@@ -58,7 +58,7 @@ public class CidadeServiceImpl implements CidadeService {
     @Override
     public Cidade findCidadeById(UUID cidadeId) {
         return cidadeRepository.findById(cidadeId)
-                .orElseThrow(() -> new NotFoundException("Cidade não encontrada!"));
+                .orElseThrow(() -> BusinessException.entityNotFound("Cidade",cidadeId.toString()));
     }
 
     @Override

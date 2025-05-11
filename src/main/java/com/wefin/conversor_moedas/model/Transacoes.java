@@ -46,7 +46,7 @@ public class Transacoes implements Serializable {
     private BigDecimal valorConvertido;
 
     @Column(name = "valor_troco")
-    private BigDecimal valorTroco;
+    private BigDecimal valorTroco = BigDecimal.ZERO;
 
     @Column(name = "transaction_date", nullable = false)
     private LocalDateTime transactionDate = LocalDateTime.now();
