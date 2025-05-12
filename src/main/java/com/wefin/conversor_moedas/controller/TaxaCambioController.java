@@ -80,7 +80,7 @@ public class TaxaCambioController {
     }
 
     @Operation(summary = "Método que consulta a taxas de cambio")
-    @GetMapping("consta-taxa")
+    @GetMapping("consulta-taxa")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ConsultaTaxaCambioRecordDTO> consultaTaxa(
             @RequestParam UUID taxaCambioId,

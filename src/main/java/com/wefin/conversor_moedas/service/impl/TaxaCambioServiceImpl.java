@@ -129,17 +129,25 @@ public class TaxaCambioServiceImpl implements TaxaCambioService {
     public ConsultaTaxaCambioRecordDTO consultaCotacao(UUID taxaCambioId, BigDecimal valorEnviado, UUID moedaDoCliente) {
         TaxaCambio taxaDeCambio = findTaxaById(taxaCambioId);
 
-        if(!taxaDeCambio.getMoedaDestino().getId().equals(moedaDoCliente)) {
+        if(!taxaDeCambio.getMoedaDestino().getId().equals(moedaDoCliente) && !taxaDeCambio.getMoedaOrigem().getId().equals(moedaDoCliente)) {
             throw BusinessException.businessRule("Moeda enviada não corresponte com a taxa de cambio");
         }
         if(valorEnviado == null) {
             valorEnviado = BigDecimal.ZERO;
         }
+        boolean isConversaoDestino = moedaDoCliente.equals(taxaDeCambio.getMoedaDestino().getId());
+
+        BigDecimal valorEnviadoConvertido = isConversaoDestino
+                ? valorEnviado.divide(taxaDeCambio.getTaxa(), 2, BigDecimal.ROUND_HALF_UP)
+                : valorEnviado.multiply(taxaDeCambio.getTaxa());
+
+        String suaMoeda = (isConversaoDestino ? taxaDeCambio.getMoedaDestino() : taxaDeCambio.getMoedaOrigem()).getName();
+        String suaMoedaDesejada = (isConversaoDestino ? taxaDeCambio.getMoedaOrigem() : taxaDeCambio.getMoedaDestino()).getName();
 
         return new ConsultaTaxaCambioRecordDTO(taxaDeCambio.getTaxa(),
-                valorEnviado.multiply(taxaDeCambio.getTaxa()),
-                        taxaDeCambio.getMoedaDestino().getName(),
-                        taxaDeCambio.getMoedaOrigem().getName());
+                valorEnviadoConvertido,
+                suaMoeda,
+                suaMoedaDesejada);
     }
 
     private TaxaCambio atualizarMoeda(TaxaCambio taxa, UUID moedaId, String tipoMoeda,

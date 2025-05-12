@@ -14,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -43,6 +46,11 @@ public class TransacaoServiceImpl implements TrasacaoService {
         this.taxaCambioService = taxaCambioService;
     }
 
+    @Transactional(
+            rollbackFor = Exception.class,
+            isolation = Isolation.SERIALIZABLE,
+            timeout = 30
+    )
     public TransacaoViewRecordDTO createTransacao(TransacaoRecordDTO transacaoRecordDTO, JwtAuthenticationToken jwtToken) {
         var usuario = usuarioService.findById(UUID.fromString(jwtToken.getName()));
         var produto = producoService.findProdutoById(transacaoRecordDTO.produtoId());
